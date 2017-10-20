@@ -7,6 +7,7 @@ TODO:
 - make side grips
 */
 
+include <../BH-Lib/all.scad>;
 include <_conf.scad>;
 use <iPhone 7 case.scad>;
 
@@ -367,7 +368,7 @@ module iphone_7_case_w_stand() {
 	arm_detents(TOLERANCE_XY, -TOLERANCE_XY);
 }
 
-module iphone_7_case_w_stand_mock(stand = false) {
+module iphone_7_case_w_stand_mock(stand = false, a = 0) {
 
 	landscape = stand == "landscape";
 
@@ -376,7 +377,7 @@ module iphone_7_case_w_stand_mock(stand = false) {
 		translate([0, 0, -DIM[2] / 2 - TOLERANCE - THICKNESS])
 		rotate([0, 0, STAND_HOME_ANGLE]) {
 
-			color("gray")
+//			color("gray")
 			translate([0, 0, THICKNESS])
 			rotate([180, 0])
 			collar();
@@ -388,12 +389,13 @@ module iphone_7_case_w_stand_mock(stand = false) {
 			arm();
 		}
 
-		color("gray")
+//		color("gray")
+		rotate([0, 0, a])
 		iphone_7_case_w_stand();
 
 		*
 // 		%
-		color([0.25, 0.25, 0.25])
+//		color([0.25, 0.25, 0.25])
 		iphone_7();
 	}
 
@@ -414,29 +416,36 @@ module iphone_7_case_w_stand_mock(stand = false) {
 }
 
 // MOCKS
-*
+//*
 union() {
 
-	$fs = 0.5;
+	translate([0, DIM[0]]) {
+		translate([-(DIM[1] / 2 + 10), 0])
+		rotate([0, 180])
+		iphone_7_case_w_stand_mock();
 
-	*
-	translate([-(DIM[1] + 20), 0])
-	rotate([0, 180])
-	iphone_7_case_w_stand_mock();
-
-	iphone_7_case_w_stand_mock();
-
-	*
-	translate([DIM[1] + 20, 0]) {
-		iphone_7_case_w_stand_mock("portrait");
-
-		translate([DIM[1] / 2 + 20 + DIM[0] / 2, 0])
-		iphone_7_case_w_stand_mock("landscape");
+		translate([(DIM[1] / 2 + 10), 0])
+		iphone_7_case_w_stand_mock();
 	}
+
+	translate([-(DIM[1] * 1.5 + 20 + 10), 0])
+	iphone_7_case_w_stand_mock("portrait");
+
+	translate([-(DIM[1] / 2 + 10), 0])
+	iphone_7_case_w_stand_mock("portrait", 180);
+
+	translate([(DIM[0] * 1.5 + 20 + 10), 0])
+	iphone_7_case_w_stand_mock("landscape");
+
+	translate([(DIM[0] / 2 + 10), 0])
+	iphone_7_case_w_stand_mock("landscape", 180);
 }
 
+*
 arm();
 
-// collar();
+*
+collar();
 
-// iphone_7_case_w_stand();
+*
+iphone_7_case_w_stand();
